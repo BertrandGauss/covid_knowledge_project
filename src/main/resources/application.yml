@@ -1,0 +1,18 @@
+server:
+  port:${PORT:8080}
+
+spring:
+  neo4j:
+    uri: neo4j+s://demo.neo4jlabs.com
+    authentication:
+      username: ${NEO4J_USER:movies}
+      password: ${NEO4J_PASSWORD:movies}
+    database: ${NEO4J_DATABASE:covid}
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          neo4j:
+            cypher : trace
