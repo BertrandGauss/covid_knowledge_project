@@ -11,8 +11,4 @@ import java.util.Map;
 public class AuthorController {
     private AuthorService authorService;
 
-    @GetMapping("/graph")
-    public Map<String, List<Object>> getGraph() {
-        return authorService.fetchAuthorGraph();
-    }
 }
