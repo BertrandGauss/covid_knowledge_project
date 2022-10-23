@@ -3,7 +3,7 @@ package com.covid.entity;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 
-@Node
+@Node(value = "Paper")
 public class Paper {
     @Id
     private String title;
