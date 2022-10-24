@@ -13,11 +13,11 @@ public class PaperDetail {
         this.cast = cast;
     }
 
-    public String getName() {
+    public String getTitle() {
         return title;
     }
 
-    public void setName(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 

@@ -16,7 +16,5 @@ public interface PaperDao extends Repository<Paper, String> {
     @Query("MATCH (paper:Paper) WHERE paper.title CONTAINS $title RETURN paper")
     List<Paper> findSearchResults(@Param("title") String title);
 
-    @Query(value = "MATCH (p:Paper)<-[:write]-(author:Author) RETURN p.title as title, collect(a) as cast LIMIT $limit")
-    List<PaperDetail> graph(@Param("limit") Integer limit);
 }
 

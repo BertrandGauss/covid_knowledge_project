@@ -44,21 +44,21 @@ public class PaperService {
         result.put(key2,value2);
         return result;
     }
-    private Map<String, Object> toD3Format(Iterator<Record> result) {
+    private Map<String, Object> toD3Format(Collection<PaperDetail> result) {
         List<Map<String, Object>> nodes = new ArrayList<Map<String, Object>>();
         List<Map<String, Object>> rels = new ArrayList<Map<String, Object>>();
+        List<PaperDetail> res = (List<PaperDetail>) result;
         int i = 0;
-        while (result.hasNext()) {
-            System.out.println(i);
-            Record row = result.next();
-            nodes.add(map("title", row.get("author"), "label", "author"));
+        for(int j=0;j<result.size();j++) {
+            PaperDetail row = ((List<PaperDetail>) result).get(j);
+            nodes.add(map("title", row.getTitle(), "label", "paper"));
             int target = i;
             i++;
-            for (Object name : (Collection) row.get("cast")) {
-                Map<String, Object> actor = map("title", name, "label", "author");
-                int source = nodes.indexOf(actor);
+            for (Object name : (Collection) row.getCast()) {
+                Map<String, Object> author = map("title", name, "label", "author");
+                int source = nodes.indexOf(author);
                 if (source == -1) {
-                    nodes.add(actor);
+                    nodes.add(author);
                     source = i++;
                 }
                 rels.add(map("source", source, "target", target));
@@ -68,10 +68,19 @@ public class PaperService {
     }
 
     //获得论文力导向图
-    public List<PaperDetail> graph(int limit) {
-        System.out.println(paperDao.graph(limit));
-        List<PaperDetail> result = paperDao.graph(limit);
-        return result;
+    public  Map<String, Object>  graph(int limit) {
+        Collection<PaperDetail> result= this.neo4jClient
+                .query("MATCH (paper:Paper)<-[:write]-(author:Author) " +
+                        "WITH paper, collect(author) as cast " +
+                        "RETURN paper { .title, cast: cast }"+
+                        "LIMIT $limit"
+                )
+                .in(database())
+                .bindAll(Map.of("limit", limit))
+                .fetchAs(PaperDetail.class)
+                .mappedBy(this::toPaperDetails)
+                .all();
+        return toD3Format(result);
     }
 
 

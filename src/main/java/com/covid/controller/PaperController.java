@@ -21,7 +21,7 @@ public class PaperController {
 
 
     @RequestMapping("/graph")
-    public List<PaperDetail> graph(@RequestParam(value = "limit",required = false) Integer limit) {
+    public  Map<String, Object>  graph(@RequestParam(value = "limit",required = false) Integer limit) {
         System.out.println(limit == null ? 100 : limit);
         return paperService.graph(limit == null ? 100 : limit);
     }
