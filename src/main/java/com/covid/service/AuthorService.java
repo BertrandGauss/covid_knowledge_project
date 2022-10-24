@@ -2,12 +2,12 @@ package com.covid.service;
 
 import com.covid.dao.AuthorDao;
 import com.covid.dao.PaperDao;
-import com.covid.entity.AuthorView;
-import com.covid.entity.PaperView;
+import com.covid.entity.*;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.SessionConfig;
 import org.neo4j.driver.Value;
+import org.neo4j.driver.types.TypeSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.DatabaseSelectionProvider;
 import org.springframework.data.neo4j.core.Neo4jClient;
@@ -21,20 +21,18 @@ import java.util.stream.Collectors;
 public class AuthorService {
     @Autowired
     private AuthorDao authorDao;
-
-
+    @Autowired
+    private Neo4jClient neo4jClient;
+    @Autowired
+    private  Driver driver;
+    @Autowired
     private  DatabaseSelectionProvider databaseSelectionProvider;
+
     //通过部分名字查找包含该名字的作者
     public List<AuthorView> searchAuthorsByName(String name) {
         return authorDao.findSearchResults(name)
                 .stream()
                 .map(AuthorView::new)
-                .collect(Collectors.toList());
-    }
-    public List<PaperView> findAuthorDetail(String name) {
-        return authorDao.findAuthorDetail(name)
-                .stream()
-                .map(PaperView::new)
                 .collect(Collectors.toList());
     }
 
@@ -71,4 +69,38 @@ public class AuthorService {
         Iterator<Map<String, Object>> result = authorDao.findCooperator(name).iterator();
         return toD3Format(result);
     }
+    private AuthorDetail toAuthorDetails(TypeSystem ignored, org.neo4j.driver.Record record) {
+        Value author = record.get("author");
+        return new AuthorDetail(
+                author.get("name").asString(),
+                author.get("cast").asList((member) -> {
+                    Paper result = new Paper(
+                            member.get("title").asString()
+                    );
+                    return result;
+
+                })
+        );
+    }
+    private String database() {
+        return databaseSelectionProvider.getDatabaseSelection().getValue();
+    }
+
+    //根据作者查找他写的文章
+    public AuthorDetail fetchDetailsByName(String name) {
+        return this.neo4jClient
+                .query("" +
+                        "MATCH (author:Author {name: $name}) " +
+                        "OPTIONAL MATCH (author)-[r]->(paper:Paper) " +
+                        "WITH author, COLLECT({ title: paper.title, role: HEAD(r.roles) }) as cast " +
+                        "RETURN author { .name, cast: cast }"
+                )
+                .in(database())
+                .bindAll(Map.of("name", name))
+                .fetchAs(AuthorDetail.class)
+                .mappedBy(this::toAuthorDetails)
+                .one()
+                .orElse(null);
+    }
+
 }

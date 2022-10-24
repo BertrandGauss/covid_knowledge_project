@@ -15,9 +15,6 @@ public interface AuthorDao extends Repository<Author, String> {
     @Query("MATCH (author:Author) WHERE author.name CONTAINS $name RETURN author")
     List<Author> findSearchResults(@Param("name") String name);
 
-    @Query("MATCH (p:Paper)<-[:write]-(a:Author) WHERE a.name = $name RETURN p ")
-    List<Paper> findAuthorDetail(@Param("name") String name);
-
     @Query("MATCH (x:Author{name:$name })-[:write*2]-(y:Author) WHERE x.name <> y.name RETURN x.name as author, collect(a.name) as cast ")
     List<Map<String,Object>> findCooperator(@Param("name") String name);
 }

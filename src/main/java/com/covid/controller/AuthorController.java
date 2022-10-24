@@ -1,5 +1,6 @@
 package com.covid.controller;
 
+import com.covid.entity.AuthorDetail;
 import com.covid.entity.AuthorView;
 import com.covid.entity.PaperView;
 import com.covid.service.AuthorService;
@@ -23,8 +24,8 @@ public class AuthorController {
     }
 
     @RequestMapping("/getDetail")
-    List<PaperView> getDetail(@RequestParam("name") String name) {
-        return authorService.findAuthorDetail((name));
+    AuthorDetail getDetail(@RequestParam("name") String name) {
+        return authorService.fetchDetailsByName((name));
     }
 
 }

@@ -1,6 +1,7 @@
 package com.covid.controller;
 
 import com.covid.entity.AuthorView;
+import com.covid.entity.PaperDetail;
 import com.covid.entity.PaperView;
 import com.covid.service.PaperService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class PaperController {
     }
 
     @RequestMapping("/getDetail")
-    List<AuthorView> getDetail(@RequestParam("title") String title) {
-        return paperService.findPaperDetail((title));
+    PaperDetail getDetail(@RequestParam("title") String title) {
+        return paperService.fetchDetailsByTitle((title));
     }
 }

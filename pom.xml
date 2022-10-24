@@ -26,6 +26,11 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-neo4j</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.neo4j.driver</groupId>
+      <artifactId>neo4j-java-driver-spring-boot-starter</artifactId>
+      <version>4.3.6.0</version>
+    </dependency>
 
     <!-- Needed for Springs WebMVC support. -->
     <dependency>

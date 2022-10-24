@@ -1,9 +1,11 @@
 package com.covid.entity;
 
+import java.util.List;
 import java.util.Objects;
 
 public class AuthorView {
     private Author author;
+
 
     public AuthorView(Author author) {
         this.author = author;
