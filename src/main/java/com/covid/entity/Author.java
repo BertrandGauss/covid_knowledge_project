@@ -4,14 +4,13 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 
 @Node(value = "Author")
-public class Author
-{
+public class Author {
 
     @Id
     private String name;
 
 
-    public Author(String name){
+    public Author(String name) {
         this.name = name;
     }
 

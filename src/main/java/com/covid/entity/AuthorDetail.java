@@ -1,15 +1,14 @@
 package com.covid.entity;
 
 
-
 import java.util.List;
 import java.util.Objects;
 
 
 public class AuthorDetail {
-    private  String name;
+    private String name;
 
-    private  List<Paper> cast;
+    private List<Paper> cast;
 
     public AuthorDetail(String name, List<Paper> cast) {
         this.name = name;

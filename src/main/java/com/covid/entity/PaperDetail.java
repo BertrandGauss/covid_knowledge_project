@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class PaperDetail {
-    private  String title;
+    private String title;
 
     private List<Author> cast;
 

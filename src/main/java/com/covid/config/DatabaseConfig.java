@@ -11,12 +11,12 @@ public class DatabaseConfig {
 
     /**
      * Neo4j version-aware database selector.
-     *
+     * <p>
      * This is only needed for applications running with both Neo4j versions 3 (where multitenancy is not available) and 4.
-     *
+     * <p>
      * Ideally, one would run instead (where driver is an instance of org.neo4j.driver.Driver):
      * <code>
-     *   String neo4jVersion = driver.session().run("RETURN 1").consume().server().version();
+     * String neo4jVersion = driver.session().run("RETURN 1").consume().server().version();
      * </code>
      * ... but this requires permissions that the user configured by default does not have.
      *

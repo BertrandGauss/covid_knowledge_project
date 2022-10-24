@@ -9,17 +9,17 @@ public class AuthorCooperators {
 
     private List<Author> cooperators;
 
-    public AuthorCooperators(String name,  List<Author> cooperators) {
+    public AuthorCooperators(String name, List<Author> cooperators) {
         this.name = name;
         this.cooperators = cooperators;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<Author> getCooperators() {

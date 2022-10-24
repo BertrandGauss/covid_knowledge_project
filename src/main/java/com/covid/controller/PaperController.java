@@ -1,6 +1,5 @@
 package com.covid.controller;
 
-import com.covid.entity.AuthorView;
 import com.covid.entity.PaperDetail;
 import com.covid.entity.PaperView;
 import com.covid.service.PaperService;
@@ -21,7 +20,7 @@ public class PaperController {
 
 
     @RequestMapping("/graph")
-    public  Map<String, Object>  graph(@RequestParam(value = "limit",required = false) Integer limit) {
+    public Map<String, Object> graph(@RequestParam(value = "limit", required = false) Integer limit) {
         System.out.println(limit == null ? 100 : limit);
         return paperService.graph(limit == null ? 100 : limit);
     }

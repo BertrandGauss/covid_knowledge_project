@@ -1,33 +1,30 @@
 package com.covid.service;
 
 import com.covid.dao.PaperDao;
-
 import com.covid.entity.Author;
 import com.covid.entity.PaperDetail;
-import org.neo4j.driver.Driver;
-import com.covid.entity.AuthorView;
 import com.covid.entity.PaperView;
-import org.neo4j.driver.*;
+import org.neo4j.driver.Driver;
+import org.neo4j.driver.Value;
 import org.neo4j.driver.types.TypeSystem;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.neo4j.core.Neo4jClient;
-import org.springframework.stereotype.Service;
-import org.neo4j.driver.Session;
 import org.springframework.data.neo4j.core.DatabaseSelectionProvider;
 import org.springframework.data.neo4j.core.Neo4jClient;
+import org.springframework.stereotype.Service;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class PaperService {
     @Autowired
-    private  PaperDao paperDao;
+    private PaperDao paperDao;
     @Autowired
     private Neo4jClient neo4jClient;
     @Autowired
-    private  Driver driver;
+    private Driver driver;
     @Autowired
-    private  DatabaseSelectionProvider databaseSelectionProvider;
+    private DatabaseSelectionProvider databaseSelectionProvider;
 
     //通过标题部分查找相关标题
     public List<PaperView> searchPaperByTitle(String title) {
@@ -39,23 +36,24 @@ public class PaperService {
     }
 
     private Map<String, Object> map(String key1, Object value1, String key2, Object value2) {
-        Map<String, Object> result = new HashMap<String,Object>(2);
-        result.put(key1,value1);
-        result.put(key2,value2);
+        Map<String, Object> result = new HashMap<String, Object>(2);
+        result.put(key1, value1);
+        result.put(key2, value2);
         return result;
     }
+
     private Map<String, Object> toD3Format(Collection<PaperDetail> result) {
         List<Map<String, Object>> nodes = new ArrayList<Map<String, Object>>();
         List<Map<String, Object>> rels = new ArrayList<Map<String, Object>>();
         List<PaperDetail> res = (List<PaperDetail>) result;
         int i = 0;
-        for(int j=0;j<result.size();j++) {
+        for (int j = 0; j < result.size(); j++) {
             PaperDetail row = ((List<PaperDetail>) result).get(j);
             nodes.add(map("title", row.getTitle(), "label", "paper"));
             int target = i;
             i++;
-            for (Object name : (Collection) row.getCast()) {
-                Map<String, Object> author = map("title", name, "label", "author");
+            for (Author a : row.getCast()) {
+                Map<String, Object> author = map("name", a.getName(), "label", "author");
                 int source = nodes.indexOf(author);
                 if (source == -1) {
                     nodes.add(author);
@@ -68,11 +66,11 @@ public class PaperService {
     }
 
     //获得论文力导向图
-    public  Map<String, Object>  graph(int limit) {
-        Collection<PaperDetail> result= this.neo4jClient
+    public Map<String, Object> graph(int limit) {
+        Collection<PaperDetail> result = this.neo4jClient
                 .query("MATCH (paper:Paper)<-[:write]-(author:Author) " +
                         "WITH paper, collect(author) as cast " +
-                        "RETURN paper { .title, cast: cast }"+
+                        "RETURN paper { .title, cast: cast }" +
                         "LIMIT $limit"
                 )
                 .in(database())
@@ -83,13 +81,6 @@ public class PaperService {
         return toD3Format(result);
     }
 
-
-    private Session sessionFor(String database) {
-        if (database == null) {
-            return driver.session();
-        }
-        return driver.session(SessionConfig.forDatabase(database));
-    }
 
     private String database() {
         return databaseSelectionProvider.getDatabaseSelection().getValue();
@@ -108,7 +99,8 @@ public class PaperService {
                 })
         );
     }
-   //根据论文题目查找作者
+
+    //根据论文题目查找作者
     public PaperDetail fetchDetailsByTitle(String title) {
         return this.neo4jClient
                 .query("" +
