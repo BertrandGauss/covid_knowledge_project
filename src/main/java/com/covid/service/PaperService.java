@@ -117,5 +117,48 @@ public class PaperService {
                 .orElse(null);
     }
 
+    //创建gds图
+    public void createGDS(){
+        try {
+            paperDao.createGds();
+        }
+        catch( IllegalArgumentException e){
+            System.out.println("已经创建过了");
+        }
+    }
+
+    public Map<String, Double> toScore(TypeSystem ignored, org.neo4j.driver.Record record) {
+
+        Map<String, Double> map =  new HashMap<String, Double>(2);
+
+        Double score = record.get(1).asDouble();
+        map.put(record.get(0).asString(), score);
+        return map;
+    }
+    public List<Map> pageRank(){
+        this.neo4jClient
+                .query("CALL gds.pageRank.write.estimate('authors_and_papers', {" +
+                        "  writeProperty: 'pageRank'," +
+                        "  maxIterations: 20," +
+                        "  dampingFactor: 0.85" +
+                        "})" +
+                        "YIELD nodeCount, relationshipCount, bytesMin, bytesMax, requiredMemory"
+                )
+                .in(database());
+        Collection<Map> result =this.neo4jClient
+                .query("CALL gds.pageRank.stream('authors_and_papers') "+
+                        "YIELD nodeId, score "+
+                        "RETURN gds.util.asNode(nodeId).title AS title, score "+
+                        "ORDER BY score DESC, title ASC "+
+                        "Limit 10"
+                )
+                .in(database())
+                .fetchAs( Map.class)
+                .mappedBy(this::toScore)
+                .all();
+        return (List<Map>) result;
+    }
+
+
 
 }

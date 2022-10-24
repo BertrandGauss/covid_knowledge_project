@@ -130,4 +130,21 @@ public class AuthorService {
     }
 
 
+    //最短路径
+//    public PaperDetail findMinPath(String name1, String name) {
+//        return this.neo4jClient
+//                .query("" +
+//                        "MATCH (paper:Paper {title: $title}) " +
+//                        "OPTIONAL MATCH (author:Author)-[r]->(paper) " +
+//                        "WITH paper, COLLECT({ name: author.name, role: HEAD(r.roles) }) as cast " +
+//                        "RETURN paper { .title, cast: cast }"
+//                )
+//                .in(database())
+//                .bindAll(Map.of("title", title))
+//                .fetchAs(PaperDetail.class)
+//                .mappedBy(this::toPaperDetails)
+//                .one()
+//                .orElse(null);
+//    }
+
 }

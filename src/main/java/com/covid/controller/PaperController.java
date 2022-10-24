@@ -34,4 +34,14 @@ public class PaperController {
     PaperDetail getDetail(@RequestParam("title") String title) {
         return paperService.fetchDetailsByTitle((title));
     }
+
+    @GetMapping("/createGDS")
+    void createGDS(){
+        paperService.createGDS();
+    }
+    @GetMapping("/pageRank")
+    List<Map> pageRank(){
+        return paperService.pageRank();
+
+    }
 }
