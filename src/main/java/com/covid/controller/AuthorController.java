@@ -1,5 +1,6 @@
 package com.covid.controller;
 
+import com.covid.entity.AuthorCooperators;
 import com.covid.entity.AuthorDetail;
 import com.covid.entity.AuthorView;
 import com.covid.entity.PaperView;
@@ -26,6 +27,11 @@ public class AuthorController {
     @RequestMapping("/getDetail")
     AuthorDetail getDetail(@RequestParam("name") String name) {
         return authorService.fetchDetailsByName((name));
+    }
+
+    @RequestMapping("/findCooperator")
+    AuthorCooperators findCooperator(@RequestParam("name") String name) {
+        return authorService.findCooperators((name));
     }
 
 }

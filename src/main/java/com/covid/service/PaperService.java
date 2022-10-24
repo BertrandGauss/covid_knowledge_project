@@ -68,10 +68,10 @@ public class PaperService {
     }
 
     //获得论文力导向图
-    public Map<String, Object> graph(int limit) {
+    public List<PaperDetail> graph(int limit) {
         System.out.println(paperDao.graph(limit));
-        List<Record> result = paperDao.graph(limit);
-        return toD3Format(result.iterator());
+        List<PaperDetail> result = paperDao.graph(limit);
+        return result;
     }
 
 

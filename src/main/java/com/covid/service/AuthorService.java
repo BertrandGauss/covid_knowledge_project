@@ -65,10 +65,7 @@ public class AuthorService {
         return map("nodes", nodes, "links", rels);
     }
 
-    private Map<String, Object> findCooperator(String name){
-        Iterator<Map<String, Object>> result = authorDao.findCooperator(name).iterator();
-        return toD3Format(result);
-    }
+
     private AuthorDetail toAuthorDetails(TypeSystem ignored, org.neo4j.driver.Record record) {
         Value author = record.get("author");
         return new AuthorDetail(
@@ -76,6 +73,20 @@ public class AuthorService {
                 author.get("cast").asList((member) -> {
                     Paper result = new Paper(
                             member.get("title").asString()
+                    );
+                    return result;
+
+                })
+        );
+    }
+
+    private AuthorCooperators toAuthorCooperators(TypeSystem ignored, org.neo4j.driver.Record record) {
+        Value author = record.get("author");
+        return new AuthorCooperators(
+                author.get("name").asString(),
+                author.get("cooperators").asList((member) -> {
+                    Author result = new Author(
+                            member.get("name").asString()
                     );
                     return result;
 
@@ -102,5 +113,19 @@ public class AuthorService {
                 .one()
                 .orElse(null);
     }
-
+    public AuthorCooperators findCooperators(String name) {
+        return this.neo4jClient
+                .query("" +
+                        "MATCH (author:Author{name:$name })-[:write*2]-(y:Author) " +
+                        "WHERE author.name <> y.name " +
+                        "WITH author, COLLECT({ name: y.name }) as cooperators " +
+                        "RETURN author { .name, cooperators: cooperators }"
+                )
+                .in(database())
+                .bindAll(Map.of("name", name))
+                .fetchAs(AuthorCooperators.class)
+                .mappedBy(this::toAuthorCooperators)
+                .one()
+                .orElse(null);
+    }
 }
