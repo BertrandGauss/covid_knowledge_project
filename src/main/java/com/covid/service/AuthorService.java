@@ -6,6 +6,7 @@ import org.neo4j.driver.Driver;
 import org.neo4j.driver.Value;
 import org.neo4j.driver.types.TypeSystem;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.data.neo4j.core.DatabaseSelectionProvider;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Service;
@@ -129,7 +130,75 @@ public class AuthorService {
                 .orElse(null);
     }
 
+    public void createAuthorCraph() {
+        try {
+            authorDao.createAuthorGraph();
+        } catch (InvalidDataAccessResourceUsageException e) {
 
+            System.out.println("已经创建过了");
+        } catch (IllegalArgumentException illegalArgumentException) {
+            System.out.println("已经创建过了");
+        }
+    }
+
+    public Map<String, Double> toSimilarity(TypeSystem ignored, org.neo4j.driver.Record record) {
+
+        Map<String, Double> map = new HashMap<String, Double>(2);
+
+        Double score = record.get(2).asDouble();
+        map.put(record.get(0).asString() + " " + record.get(1).asString(), score);
+        return map;
+    }
+
+    public List<Map> node_similarity() {
+        createAuthorCraph();
+        this.neo4jClient
+                .query("CALL gds.nodeSimilarity.write.estimate('authors', { " +
+                        " writeRelationshipType: 'SIMILAR', " +
+                        " writeProperty: 'score' })" +
+                        " YIELD nodeCount, relationshipCount, bytesMin, bytesMax, requiredMemory"
+                )
+                .in(database());
+        Collection<Map> result = this.neo4jClient
+                .query("CALL gds.nodeSimilarity.stream('authors') " +
+                        " YIELD node1, node2, similarity " +
+                        " RETURN gds.util.asNode(node1).name AS Person1, gds.util.asNode(node2).name AS Person2, similarity " +
+                        "ORDER BY similarity DESCENDING, Person1, Person2 " +
+                        "Limit 10"
+                )
+                .in(database())
+                .fetchAs(Map.class)
+                .mappedBy(this::toSimilarity)
+                .all();
+        return (List<Map>) result;
+    }
+
+    public List toDijkstraPath(TypeSystem ignored, org.neo4j.driver.Record record) {
+        Value path = record.get("nodeNames");
+
+        return path.asList();
+    }
+
+    public List<List> DijkstraPath(String name) {
+        createAuthorCraph();
+        Collection<List> result = this.neo4jClient
+                .query("MATCH (source:Author {name: $name}) " +
+                        "CALL gds.allShortestPaths.dijkstra.stream('authors', {  sourceNode: source }) " +
+                        "YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path " +
+                        "WHERE gds.util.asNode(sourceNode).name <> gds.util.asNode(targetNode).name " +
+                        "RETURN index, gds.util.asNode(sourceNode).name AS sourceNodeName," +
+                        "gds.util.asNode(targetNode).name AS targetNodeName, totalCost," +
+                        "[nodeId IN nodeIds | gds.util.asNode(nodeId).name] AS nodeNames, costs, nodes(path) as path " +
+                        "ORDER BY index"
+                )
+                .in(database())
+                .bindAll(Map.of("name", name))
+                .fetchAs(List.class)
+                .mappedBy(this::toDijkstraPath)
+                .all();
+
+        return (List<List>) result;
+    }
     //最短路径
 //    public PaperDetail findMinPath(String name1, String name) {
 //        return this.neo4jClient

@@ -12,16 +12,9 @@ public interface PaperDao extends Repository<Paper, String> {
     @Query("MATCH (paper:Paper) WHERE paper.title CONTAINS $title RETURN paper")
     List<Paper> findSearchResults(@Param("title") String title);
 
-    @Query("CALL gds.graph.project( 'author', ['Author','Paper'],['write'])")
+    @Query("CALL gds.graph.project( 'authors_and_papers', ['Author','Paper'],['write'])")
     void createGds();
 
-    @Query("CALL gds.pageRank.write.estimate('authors_and_papers', {" +
-            "  writeProperty: 'pageRank'," +
-            "  maxIterations: 20," +
-            "  dampingFactor: 0.85" +
-            "})" +
-            "YIELD nodeCount, relationshipCount, bytesMin, bytesMax, requiredMemory")
-    void createPageRank();
 
 }
 

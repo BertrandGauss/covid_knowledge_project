@@ -35,12 +35,12 @@ public class PaperController {
         return paperService.fetchDetailsByTitle((title));
     }
 
-    @GetMapping("/createGDS")
-    void createGDS(){
-        paperService.createGDS();
-    }
+    //    @GetMapping("/createGDS")
+//    void createGDS(){
+//        paperService.createGDS();
+//    }
     @GetMapping("/pageRank")
-    List<Map> pageRank(){
+    List<Map> pageRank() {
         return paperService.pageRank();
 
     }

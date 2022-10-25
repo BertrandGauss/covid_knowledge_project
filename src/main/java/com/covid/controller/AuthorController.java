@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/author")
@@ -31,6 +32,16 @@ public class AuthorController {
     @RequestMapping("/findCooperator")
     AuthorCooperators findCooperator(@RequestParam("name") String name) {
         return authorService.findCooperators((name));
+    }
+
+    @GetMapping("/node_similarity")
+    List<Map> node_similarity() {
+        return authorService.node_similarity();
+    }
+
+    @RequestMapping("/DijkstraPath")
+    List<List> DijkstraPath(@RequestParam("name") String name) {
+        return authorService.DijkstraPath(name);
     }
 
 }
