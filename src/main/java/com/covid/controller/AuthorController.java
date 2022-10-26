@@ -18,7 +18,10 @@ import java.util.Map;
 public class AuthorController {
     @Autowired
     private AuthorService authorService;
-
+    @RequestMapping("/graph")
+    public Map<String, Object> graph(@RequestParam(value = "limit", required = false) Integer limit) {
+        return authorService.graph(limit == null ? 100 : limit);
+    }
     @GetMapping("/search")
     List<AuthorView> search(@RequestParam("name") String name) {
         return authorService.searchAuthorsByName((name));

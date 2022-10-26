@@ -41,29 +41,28 @@ public class AuthorService {
         return result;
     }
 
-    private Map<String, Object> toD3Format(Iterator<Map<String, Object>> result) {
+    private Map<String, Object> toD3Format(Collection<AuthorDetail> result) {
         List<Map<String, Object>> nodes = new ArrayList<Map<String, Object>>();
         List<Map<String, Object>> rels = new ArrayList<Map<String, Object>>();
+        List<AuthorDetail> res = (List<AuthorDetail>) result;
         int i = 0;
-        while (result.hasNext()) {
-            System.out.println(i);
-            Map<String, Object> row = result.next();
-            nodes.add(map("title", row.get("author"), "label", "author"));
-            int target = i;
+        for (int j = 0; j < result.size(); j++) {
+            AuthorDetail row = ((List<AuthorDetail>) result).get(j);
+            nodes.add(map("name", row.getName(), "label", "author"));
+            int source = i;
             i++;
-            for (Object name : (Collection) row.get("cast")) {
-                Map<String, Object> actor = map("title", name, "label", "author");
-                int source = nodes.indexOf(actor);
-                if (source == -1) {
-                    nodes.add(actor);
-                    source = i++;
+            for (Paper a : row.getCast()) {
+                Map<String, Object> paper = map("title", a.getTitle(), "label", "paper");
+                int target = nodes.indexOf(paper);
+                if (target == -1) {
+                    nodes.add(paper);
+                    target = i++;
                 }
                 rels.add(map("source", source, "target", target));
             }
         }
         return map("nodes", nodes, "links", rels);
     }
-
 
     private AuthorDetail toAuthorDetails(TypeSystem ignored, org.neo4j.driver.Record record) {
         Value author = record.get("author");
@@ -113,6 +112,24 @@ public class AuthorService {
                 .one()
                 .orElse(null);
     }
+
+    //论文作者网络力导向图
+    public Map<String, Object> graph(int limit) {
+        Collection<AuthorDetail> result = this.neo4jClient
+                .query("MATCH (paper:Paper)<-[:write]-(author:Author) " +
+                        "WITH author, collect(paper) as cast " +
+                        "RETURN author { .name, cast: cast }" +
+                        "LIMIT $limit"
+                )
+                .in(database())
+                .bindAll(Map.of("limit", limit))
+                .fetchAs(AuthorDetail.class)
+                .mappedBy(this::toAuthorDetails)
+                .all();
+
+        return toD3Format(result);
+    }
+
 
     public AuthorCooperators findCooperators(String name) {
         return this.neo4jClient
