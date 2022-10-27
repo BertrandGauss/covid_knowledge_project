@@ -1,13 +1,18 @@
 <html>
 <head>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://neo4j-documentation.github.io/developer-resources/language-guides/assets/css/main.css">
-    <title>Covid 知识图谱系统</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.js"></script>
+    <title>Covid Knowledge System</title>
 </head>
 
 <body>
-<div id="graph">
-</div>
+
 <div role="navigation" class="navbar navbar-default navbar-static-top">
     <div class="container">
         <div class="row">
@@ -15,8 +20,14 @@
                 <ul class="nav navbar-nav">
                     <li>
                         <form role="search" class="navbar-form" id="search">
+                            <div id="opt" class="form-group">
+                                <select class="form-control" id="search_type">
+                                    <option value ="paper">论文</option>
+                                    <option value ="author">作者</option>
+                                </select>
+                            </div>
                             <div class="form-group">
-                                <input type="text" value="covid" placeholder="Search for Paper Title" class="form-control" name="search">
+                                <input type="text" value="Taking down" placeholder="Search for Paper Title" class="form-control" name="search">
                             </div>
                             <button class="btn btn-default" type="submit">Search</button>
                         </form>
@@ -41,13 +52,13 @@
     <div class="col-md-5">
         <div class="panel panel-default">
             <div class="panel-heading">Search Results</div>
-            <table id="results" class="table table-striped table-hover">
+            <table id="results" class="table table-bordered" data-pagination="true"
+                   data-side-pagination="client" data-page-size="5">
                 <thead>
                 <tr>
-                    <th>Paper</th>
-<!--                    <th>Released</th>-->
-<!--                    <th>Tagline</th>-->
-<!--                    <th>Votes</th>-->
+                    <!--                    <th>Released</th>-->
+                    <!--                    <th>Tagline</th>-->
+                    <!--                    <th>Votes</th>-->
                 </tr>
                 </thead>
                 <tbody>
@@ -59,17 +70,17 @@
         <div class="panel panel-default">
             <div class="panel-heading" id="title">Details</div>
             <div class="row">
-                <div class="col-sm-4 col-md-4">
-                    <img src="" class="well" id="poster"/>
-                </div>
                 <div class="col-md-8 col-sm-8">
-                    <h4>Crew</h4>
+
                     <ul id="crew">
                     </ul>
                 </div>
             </div>
-            <div class="panel-footer"><button id="vote">Vote</button></div>
         </div>
+    </div>
+</div>
+<div class="graph">
+    <div id="graph">
     </div>
 </div>
 <style type="text/css">
@@ -79,58 +90,41 @@
     .link { stroke: #999; stroke-opacity: .6; stroke-width: 1px; }
 </style>
 
+<style>
+  body{
+    margin: 0px;
+  }
+
+  .graph{
+    width: 1200px;
+    height: 400px;
+    border: 1px solid #2c3e50;
+    border-radius:8px;
+    margin-top: auto;
+    margin-left: auto;
+    margin-right: auto;
+    background: #154360 repeating-linear-gradient(30deg,
+    hsla(0, 0%, 100%, .1), hsla(0, 0%, 100%, .1) 15px,
+    transparent 0, transparent 30px);
+  }
+  .node{
+    stroke:#fff;
+    stroke-width:1;
+    cursor: pointer;
+  }
+
+  .node:hover{
+    stroke-width:5;
+  }
+
+  .nodeName{
+    fill:white;
+  }
+
+</style>
+
 <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="https://d3js.org/d3.v3.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-    $(function () {
-        function showPaper(title) {
-            $.get("/paper/getdetail/" + encodeURIComponent(title),
-                    function (data) {
-                        if (!data) return;
-                        $("#title").text(data.title);
-                        $("#poster").attr("src","http://neo4j-documentation.github.io/developer-resources/language-guides/assets/posters/"+encodeURIComponent(data.title)+".jpg");
-                        var $list = $("#crew").empty();
-                        data.cast.forEach(function (cast) {
-                            $list.append($("<li>" + cast.name+  "</li>"));
-                        });
-                        $("#vote")
-                            .unbind("click")
-                            .click(function () {
-                                voteInMovie(data.title)
-                            });
-                    }, "json");
-            return false;
-        }
-        function search(showFirst = true) {
-            var query=$("#search").find("input[name=search]").val();
-            $.get("/paper/search?title=" + encodeURIComponent(query),
-                    function (data) {
-                        var t = $("table#results tbody").empty();
-                        if (!data || data.length == 0) return;
-                        data.forEach(function (row, index) {
-                            var movie = row.paper
-                            $("<tr><td class='paper'>" + paper.title
-
-                                .click(function() { showPaper($(this).find("td.paper").text());})
-                        });
-                        if (showFirst) {
-                            showPaper(data[0].paper.title);
-                        }
-                    }, "json");
-            return false;
-        }
-<!--        function voteInMovie(title) {-->
-<!--            $.post("/movie/" + encodeURIComponent(title) + "/vote", () => {-->
-<!--                search(false);-->
-<!--                showMovie(title);-->
-<!--            });-->
-        }
-
-        $("#search").submit(search);
-        search();
-    })
-</script>
-
 <script type="text/javascript">
     var width = 800, height = 800;
 
@@ -159,8 +153,10 @@
                 .call(force.drag);
 
         // html title attribute
-        node.append("title")
-                .text(function (d) { return d.title; })
+        node.append("name")
+                .text(function (d) { return d.name; })
+
+
 
         // force feed algo ticks
         force.on("tick", function() {
@@ -174,5 +170,85 @@
         });
     });
 </script>
+<script type="text/javascript">
+    $(function () {
+        function showPaper(title) {
+            $.get("/paper/getDetail/" + encodeURIComponent(title),
+                    function (data) {
+                        if (!data) return;
+                        $("#title").text(data.title);
+                        var $list = $("#crew").empty();
+                        data.cast.forEach(function (cast) {
+                            $list.append($("<li>" + cast.name+  "</li>"));
+                        });
+
+                        $("#vote")
+                            .unbind("click")
+                            .click(function () {
+                                voteInMovie(data.title)
+                            });
+                    }, "json");
+            return false;
+        }
+
+        function showAuthor(name) {
+            $.get("/author/getDetail/" + encodeURIComponent(name),
+                    function (data) {
+                        if (!data) return;
+                        $("#title").text(data.name);
+                        var $list = $("#crew").empty();
+                        data.cast.forEach(function (cast) {
+                            $list.append($("<li>" + cast.title+  "</li>"));
+                        });
+                    }, "json");
+            return false;
+        }
+
+        function search(showFirst = true) {
+            var query=$("#search").find("input[name=search]").val();
+            var query_type = document.getElementById('search_type').value;
+            if(query_type=="author"){
+                        $.get("/author/search?name=" + encodeURIComponent(query),
+                    function (data) {
+                        var t = $("table#results tbody").empty();
+                        if (!data || data.length == 0) return;
+
+                        data.forEach(function (row, index) {
+                            var author = row.author
+                            $("<tr><td class='Author'>" + author.name +"</td></tr>").appendTo(t)
+                                .click(function() { showAuthor($(this).find("td.author").text());})
+                        });
+                        if (showFirst) {
+                            showAuthor(data[0].author.name);
+                        }
+                    }, "json");
+            return false;
+            }
+            else{
+            $.get("/paper/search?title=" + encodeURIComponent(query),
+                    function (data) {
+                        var t = $("table#results tbody").empty();
+                        if (!data || data.length == 0) return;
+
+                        data.forEach(function (row, index) {
+                            var paper = row.paper
+                            $("<tr><td class='paper'>" + paper.title +"</td></tr>").appendTo(t)
+                                .click(function() { showPaper($(this).find("td.paper").text());})
+                        });
+                        if (showFirst) {
+                            showPaper(data[0].paper.title);
+                        }
+                    }, "json");
+            return false;
+        }
+        }
+        $("#search").submit(search);
+        search();
+    })
+</script>
+
+
+
+
 </body>
 </html>

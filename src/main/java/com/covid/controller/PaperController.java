@@ -4,10 +4,7 @@ import com.covid.entity.PaperDetail;
 import com.covid.entity.PaperView;
 import com.covid.service.PaperService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -30,8 +27,9 @@ public class PaperController {
         return paperService.searchPaperByTitle((title));
     }
 
-    @RequestMapping("/getDetail")
-    PaperDetail getDetail(@RequestParam("title") String title) {
+    @RequestMapping("/getDetail/{title}")
+    PaperDetail getDetail(@PathVariable("title") String title) {
+        System.out.println(title);
         return paperService.fetchDetailsByTitle((title));
     }
 
