@@ -18,7 +18,7 @@ public class AuthorController {
 
     @RequestMapping("/graph")
     public Map<String, Object> graph(@RequestParam(value = "limit", required = false) Integer limit) {
-        return authorService.graph(limit == null ? 10 : limit);
+        return authorService.graph(limit == null ? 30 : limit);
     }
 
     @GetMapping("/search")

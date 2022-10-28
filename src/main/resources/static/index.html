@@ -49,16 +49,14 @@
 </div>
 
 <div class="row">
-    <div class="col-md-5">
+    <div class="col-md-5-search">
         <div class="panel panel-default">
             <div class="panel-heading">Search Results</div>
             <table id="results" class="table table-bordered" data-pagination="true"
                    data-side-pagination="client" data-page-size="5">
                 <thead>
                 <tr>
-                    <!--                    <th>Released</th>-->
-                    <!--                    <th>Tagline</th>-->
-                    <!--                    <th>Votes</th>-->
+
                 </tr>
                 </thead>
                 <tbody>
@@ -66,7 +64,7 @@
             </table>
         </div>
     </div>
-    <div class="col-md-7">
+    <div class="col-md-7-detail">
         <div class="panel panel-default">
             <div class="panel-heading" id="title">Details</div>
             <div class="row">
@@ -79,42 +77,50 @@
         </div>
     </div>
 </div>
-<div class="graph">
+<div class="graph_place">
     <div id="graph">
     </div>
 </div>
 <style type="text/css">
-    .node { stroke: #222; stroke-width: 1.5px; }
-    .node.actor { fill: #888; }
-    .node.movie { fill: #BBB; }
+    .node { stroke: #fff; stroke-width: 1px; }
+    .node.author { fill: #FD7623; }
+    .node.paper { fill: #3388B1; }
     .link { stroke: #999; stroke-opacity: .6; stroke-width: 1px; }
 </style>
 
 <style>
-  body{
-    margin: 0px;
+
+  .col-md-7-detail{
+      width: 500px;
+      height: 200px;
+      margin-top: auto;
+      margin-left: 10px;
+      margin-right: auto;
   }
 
-  .graph{
-    width: 1200px;
-    height: 400px;
-    border: 1px solid #2c3e50;
-    border-radius:8px;
-    margin-top: auto;
-    margin-left: auto;
-    margin-right: auto;
-    background: #154360 repeating-linear-gradient(30deg,
-    hsla(0, 0%, 100%, .1), hsla(0, 0%, 100%, .1) 15px,
-    transparent 0, transparent 30px);
+  .col-md-5-search{
+      width: 500px;
+      height: 200px;
+      margin-top: auto;
+      margin-left: 10px;
+      margin-right: auto;
   }
+  .graph_place{
+      width: 500px;
+      height: 200px;
+      margin-top: auto;
+      margin-left: 400px;
+      margin-right: auto;
+  }
+
   .node{
     stroke:#fff;
-    stroke-width:1;
+    stroke-width:1px;
     cursor: pointer;
   }
 
   .node:hover{
-    stroke-width:5;
+    stroke-width:2px;
   }
 
   .nodeName{
@@ -125,14 +131,21 @@
 
 <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="https://d3js.org/d3.v3.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-    var width = 800, height = 800;
 
+<!--<script src="https://d3js.org/d3.v5.min.js"></script>-->
+<script type="text/javascript">
+    var width = 600, height = 400;
+    var img_w = 77;
+    var img_h = 80;
+    var text_dx = -20;
+    var text_dy = 20;
     var force = d3.layout.force()
-            .charge(-200).linkDistance(30).size([width, height]);
+            .charge(-50)
+            .linkDistance(30).
+            size([width, height]);
 
     var svg = d3.select("#graph").append("svg")
-            .attr("width", "100%").attr("height", "100%")
+             .attr("viewBox", [0, 0, width, height])
             .attr("pointer-events", "all");
 
     d3.json("/author/graph", function(error, graph) {
@@ -140,6 +153,8 @@
 		if (error) return;
 
         force.nodes(graph.nodes).links(graph.links).start();
+        const g = svg.append("g")
+            .attr("class","content")
 
         var link = svg.selectAll(".link")
                 .data(graph.links).enter()
@@ -149,17 +164,21 @@
                 .data(graph.nodes).enter()
                 .append("circle")
                 .attr("class", function (d) { return "node "+d.label })
-                .attr("r", 10)
+                .attr("r", 5)
                 .call(force.drag);
 
         // html title attribute
-        node.append("name")
-                .text(function (d) { return d.name; })
-
+        node.append("title")
+                .text(function (d) { if (d.title){return d.title;} return d.name; })
 
 
         // force feed algo ticks
         force.on("tick", function() {
+        graph.nodes.forEach(function(d,i){
+                d.x = d.x - img_w/2 < 0     ? img_w/2 : d.x ;
+                d.x = d.x + img_w/2 > width ? width - img_w/2 : d.x ;
+                d.y = d.y - img_h/2 < 0      ? img_h/2 : d.y ;
+                d.y = d.y + img_h/2 + text_dy > height ? height - img_h/2 - text_dy : d.y ;})
             link.attr("x1", function(d) { return d.source.x; })
                     .attr("y1", function(d) { return d.source.y; })
                     .attr("x2", function(d) { return d.target.x; })
