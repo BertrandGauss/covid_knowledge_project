@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="col-md-7">
+    <div class="panel panel-default">
+        <div class="panel-heading" id="title">Details</div>
+        <div class="row">
+            <div class="col-md-8 col-sm-8">
+
+                <ul id="crew">
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script>
+  var url = decodeURI(window.location.href);
+  var argsIndex = url.split("?name=");
+  var name = argsIndex[1];
+  alert(name);
+ $.get("/author/getDetail/" + encodeURIComponent(name),
+                    function (data) {
+                        if (!data) return;
+                        $("#title").text(data.name);
+                        var $list = $("#crew").empty();
+                        data.cast.forEach(function (cast) {
+                            $list.append($("<li>" + cast.title+  "</li>"));
+                        });
+                    }, "json");
+</script>
+</html>

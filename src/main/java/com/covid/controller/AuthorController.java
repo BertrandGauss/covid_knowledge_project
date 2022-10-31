@@ -3,6 +3,7 @@ package com.covid.controller;
 import com.covid.entity.AuthorCooperators;
 import com.covid.entity.AuthorDetail;
 import com.covid.entity.AuthorView;
+import com.covid.entity.NodeSimilarity;
 import com.covid.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class AuthorController {
 
     @RequestMapping("/graph")
     public Map<String, Object> graph(@RequestParam(value = "limit", required = false) Integer limit) {
-        return authorService.graph(limit == null ? 30 : limit);
+        return authorService.graph(limit == null ? 50 : limit);
     }
 
     @GetMapping("/search")
@@ -32,12 +33,12 @@ public class AuthorController {
     }
 
     @RequestMapping("/findCooperator")
-    AuthorCooperators findCooperator(@RequestParam("name") String name) {
+    Map<String, Object> findCooperator(@RequestParam("name") String name) {
         return authorService.findCooperators((name));
     }
 
     @GetMapping("/node_similarity")
-    List<Map> node_similarity() {
+    List<NodeSimilarity> node_similarity() {
         return authorService.node_similarity();
     }
 

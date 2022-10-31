@@ -78,17 +78,11 @@ public class AuthorService {
         );
     }
 
-    private AuthorCooperators toAuthorCooperators(TypeSystem ignored, org.neo4j.driver.Record record) {
-        Value author = record.get("author");
+    private AuthorCooperators toAuthorCooperator(TypeSystem ignored, org.neo4j.driver.Record record) {
         return new AuthorCooperators(
-                author.get("name").asString(),
-                author.get("cooperators").asList((member) -> {
-                    Author result = new Author(
-                            member.get("name").asString()
-                    );
-                    return result;
-
-                })
+                record.get("author.name").asString(),
+                record.get("y.name").asString(),
+                record.get("paper.title").asString()
         );
     }
 
@@ -130,21 +124,49 @@ public class AuthorService {
         return toD3Format(result);
     }
 
+    private Map<String, Object> toD3FormatNew(Collection<AuthorCooperators> result) {
+        List<Map<String, Object>> nodes = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> rels = new ArrayList<Map<String, Object>>();
+        List<AuthorCooperators> res = (List<AuthorCooperators>) result;
+        int i = 0;
+        for (int j = 0; j < result.size(); j++) {
+            AuthorCooperators row = ((List<AuthorCooperators>) result).get(j);
+            if(j == 0){
+                nodes.add(map("name", row.getName(), "label", "author"));
+            }
+            Map<String, Object> paper = map("title", row.getPaper(), "label", "paper");
+            Map<String, Object> cooperator = map("name", row.getCooperator(), "label", "cooperator");
+            int target = nodes.indexOf(paper);
+            int source = nodes.indexOf(cooperator);
+            if (target == -1) {
+                nodes.add(paper);
+                target = ++i;
+                rels.add(map("source", 0, "target", target));
+            }
+            if (source == -1) {
+                nodes.add(cooperator);
+                source = ++i;
+            }
+            rels.add(map("source", source, "target", target));
 
-    public AuthorCooperators findCooperators(String name) {
-        return this.neo4jClient
+        }
+        return map("nodes", nodes, "links", rels);
+    }
+
+    public Map<String, Object> findCooperators(String name) {
+        Collection<AuthorCooperators> result = this.neo4jClient
                 .query("" +
-                        "MATCH (author:Author{name:$name })-[:write*2]-(y:Author) " +
+                        "MATCH (author:Author{name:$name })-[:write]->(paper:Paper)<-[:write]-(y:Author) " +
                         "WHERE author.name <> y.name " +
-                        "WITH author, COLLECT({ name: y.name }) as cooperators " +
-                        "RETURN author { .name, cooperators: cooperators }"
+                        "RETURN author.name, y.name,  paper.title"
                 )
                 .in(database())
                 .bindAll(Map.of("name", name))
                 .fetchAs(AuthorCooperators.class)
-                .mappedBy(this::toAuthorCooperators)
-                .one()
-                .orElse(null);
+                .mappedBy(this::toAuthorCooperator)
+                .all();
+        return toD3FormatNew(result);
+
     }
 
     public void createAuthorCraph() {
@@ -158,16 +180,12 @@ public class AuthorService {
         }
     }
 
-    public Map<String, Double> toSimilarity(TypeSystem ignored, org.neo4j.driver.Record record) {
+    public NodeSimilarity toSimilarity(TypeSystem ignored, org.neo4j.driver.Record record) {
 
-        Map<String, Double> map = new HashMap<String, Double>(2);
-
-        Double score = record.get(2).asDouble();
-        map.put(record.get(0).asString() + " " + record.get(1).asString(), score);
-        return map;
+        return  new NodeSimilarity(record.get(0).asString(),record.get(1).asString(),record.get(2).asDouble());
     }
 
-    public List<Map> node_similarity() {
+    public List<NodeSimilarity> node_similarity() {
         createAuthorCraph();
         this.neo4jClient
                 .query("CALL gds.nodeSimilarity.write.estimate('authors', { " +
@@ -176,18 +194,18 @@ public class AuthorService {
                         " YIELD nodeCount, relationshipCount, bytesMin, bytesMax, requiredMemory"
                 )
                 .in(database());
-        Collection<Map> result = this.neo4jClient
+        Collection<NodeSimilarity> result = this.neo4jClient
                 .query("CALL gds.nodeSimilarity.stream('authors') " +
                         " YIELD node1, node2, similarity " +
                         " RETURN gds.util.asNode(node1).name AS Person1, gds.util.asNode(node2).name AS Person2, similarity " +
                         "ORDER BY similarity DESCENDING, Person1, Person2 " +
-                        "Limit 10"
+                        "Limit 1000"
                 )
                 .in(database())
-                .fetchAs(Map.class)
+                .fetchAs(NodeSimilarity.class)
                 .mappedBy(this::toSimilarity)
                 .all();
-        return (List<Map>) result;
+        return (List<NodeSimilarity>) result;
     }
 
     public List toDijkstraPath(TypeSystem ignored, org.neo4j.driver.Record record) {

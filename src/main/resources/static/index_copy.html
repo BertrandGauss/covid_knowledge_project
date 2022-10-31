@@ -1,0 +1,220 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://neo4j-documentation.github.io/developer-resources/language-guides/assets/css/main.css">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.css">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.js"></script>
+  <title>Covid Knowledge System</title>
+</head>
+
+<body>
+<div id="graph">
+</div>
+<div role="navigation" class="navbar navbar-default navbar-static-top">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6 col-md-6">
+        <ul class="nav navbar-nav">
+          <li>
+            <form role="search" class="navbar-form" id="search">
+              <div id="opt" class="form-group">
+                <select class="form-control" id="search_type">
+                  <option value ="paper">论文</option>
+                  <option value ="author">作者</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <input type="text" value="covid" placeholder="Search for Paper Title" class="form-control" name="search">
+              </div>
+              <button class="btn btn-default" type="submit">Search</button>
+            </form>
+          </li>
+        </ul>
+      </div>
+      <div class="navbar-header col-sm-6 col-md-6">
+        <div class="logo-well">
+          <a href="https://neo4j.com/developer/example-project" target="_blank">
+            <img src="https://dist.neo4j.com/wp-content/uploads/neo4j_logo_globe1-150x150.png" alt="Neo4j World's Leading Graph Database" id="logo">
+          </a>
+        </div>
+        <div class="navbar-brand">
+          <div class="brand">Covid Knowledge System</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-5">
+    <div class="panel panel-default">
+      <div class="panel-heading">Search Results</div>
+      <table id="results" class="table table-bordered" data-pagination="true"
+             data-side-pagination="client" data-page-size="5">
+        <thead>
+        <tr>
+          <th>Paper</th>
+          <!--                    <th>Released</th>-->
+          <!--                    <th>Tagline</th>-->
+          <!--                    <th>Votes</th>-->
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-md-7">
+    <div class="panel panel-default">
+      <div class="panel-heading" id="title">Details</div>
+      <div class="row">
+        <div class="col-md-8 col-sm-8">
+          <h4>Author</h4>
+
+          <ul id="crew">
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style type="text/css">
+    .node { stroke: #222; stroke-width: 1.5px; }
+    .node.actor { fill: #888; }
+    .node.movie { fill: #BBB; }
+    .link { stroke: #999; stroke-opacity: .6; stroke-width: 1px; }
+</style>
+
+<script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="https://d3js.org/d3.v3.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var width = 800, height = 800;
+
+    var force = d3.layout.force()
+            .charge(-200).linkDistance(30).size([width, height]);
+
+    var svg = d3.select("#graph").append("svg")
+            .attr("width", "100%").attr("height", "100%")
+            .attr("pointer-events", "all");
+
+    d3.json("/author/graph", function(error, graph) {
+
+		if (error) return;
+
+        force.nodes(graph.nodes).links(graph.links).start();
+
+        var link = svg.selectAll(".link")
+                .data(graph.links).enter()
+                .append("line").attr("class", "link");
+
+        var node = svg.selectAll(".node")
+                .data(graph.nodes).enter()
+                .append("circle")
+                .attr("class", function (d) { return "node "+d.label })
+                .attr("r", 10)
+                .call(force.drag);
+
+        // html title attribute
+        node.append("name")
+                .text(function (d) { return d.name; })
+
+
+
+        // force feed algo ticks
+        force.on("tick", function() {
+            link.attr("x1", function(d) { return d.source.x; })
+                    .attr("y1", function(d) { return d.source.y; })
+                    .attr("x2", function(d) { return d.target.x; })
+                    .attr("y2", function(d) { return d.target.y; });
+
+            node.attr("cx", function(d) { return d.x; })
+                    .attr("cy", function(d) { return d.y; });
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(function () {
+        function showPaper(title) {
+            $.get("/paper/getDetail/" + encodeURIComponent(title),
+                    function (data) {
+                        if (!data) return;
+                        $("#title").text(data.title);
+                        var $list = $("#crew").empty();
+                        data.cast.forEach(function (cast) {
+                            $list.append($("<li>" + cast.name+  "</li>"));
+                        });
+
+                        $("#vote")
+                            .unbind("click")
+                            .click(function () {
+                                voteInMovie(data.title)
+                            });
+                    }, "json");
+            return false;
+        }
+
+        function showAuthor(name) {
+            $.get("/author/getDetail/" + encodeURIComponent(name),
+                    function (data) {
+                        if (!data) return;
+                        $("#title").text(data.name);
+                        var $list = $("#crew").empty();
+                        data.cast.forEach(function (cast) {
+                            $list.append($("<li>" + cast.title+  "</li>"));
+                        });
+                    }, "json");
+            return false;
+        }
+
+        function search(showFirst = true) {
+            var query=$("#search").find("input[name=search]").val();
+            var query_type = document.getElementById('search_type').value;
+            if(query_type=="author"){
+                     $.get("/author/search?name=" + encodeURIComponent(query),
+                    function (data) {
+                        var t = $("table#results tbody").empty();
+                        if (!data || data.length == 0) return;
+                        data.forEach(function (row, index) {
+                            var author = row.author
+                            $("<tr><td class='Author'>" + author.name +"</td></tr>").appendTo(t)
+                                .click(alert($(this).find("td.author"));function() { showAuthor($(this).find("td.author").text());})
+                        });
+                        if (showFirst) {
+                            showAuthor(data[0].author.name);
+                        }
+                    }, "json");
+            return false;
+            }
+            else{
+            $.get("/paper/search?title=" + encodeURIComponent(query),
+                    function (data) {
+                        var t = $("table#results tbody").empty();
+                        if (!data || data.length == 0) return;
+
+                        data.forEach(function (row, index) {
+                            var paper = row.paper
+                            $("<tr><td class='paper'>" + paper.title +"</td></tr>").appendTo(t)
+                                .click(function() { showPaper($(this).find("td.paper").text());})
+                        });
+                        if (showFirst) {
+                            showPaper(data[0].paper.title);
+                        }
+                    }, "json");
+            return false;
+        }
+        }
+        $("#search").submit(search);
+        search();
+    })
+</script>
+
+
+
+
+</body>
+</html>

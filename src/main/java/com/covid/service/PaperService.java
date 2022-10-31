@@ -2,12 +2,14 @@ package com.covid.service;
 
 import com.covid.dao.PaperDao;
 import com.covid.entity.Author;
+import com.covid.entity.PageRank;
 import com.covid.entity.PaperDetail;
 import com.covid.entity.PaperView;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Value;
 import org.neo4j.driver.types.TypeSystem;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.data.neo4j.core.DatabaseSelectionProvider;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Service;
@@ -121,21 +123,22 @@ public class PaperService {
     public void createGDS() {
         try {
             paperDao.createGds();
-        } catch (IllegalArgumentException e) {
+
+        } catch (InvalidDataAccessResourceUsageException e) {
+
+            System.out.println("已经创建过了");
+        } catch (IllegalArgumentException illegalArgumentException) {
             System.out.println("已经创建过了");
         }
     }
 
-    public Map<String, Double> toScore(TypeSystem ignored, org.neo4j.driver.Record record) {
+    public PageRank toScore(TypeSystem ignored, org.neo4j.driver.Record record) {
 
-        Map<String, Double> map = new HashMap<String, Double>(2);
+        return new PageRank(record.get(0).asString(),record.get(1).asDouble());
 
-        Double score = record.get(1).asDouble();
-        map.put(record.get(0).asString(), score);
-        return map;
     }
 
-    public List<Map> pageRank() {
+    public List<PageRank> pageRank() {
         createGDS();
         this.neo4jClient
                 .query("CALL gds.pageRank.write.estimate('authors_and_papers', {" +
@@ -146,18 +149,18 @@ public class PaperService {
                         "YIELD nodeCount, relationshipCount, bytesMin, bytesMax, requiredMemory"
                 )
                 .in(database());
-        Collection<Map> result = this.neo4jClient
+        Collection<PageRank> result = this.neo4jClient
                 .query("CALL gds.pageRank.stream('authors_and_papers') " +
                         "YIELD nodeId, score " +
                         "RETURN gds.util.asNode(nodeId).title AS title, score " +
                         "ORDER BY score DESC, title ASC " +
-                        "Limit 10"
+                        "Limit 1000"
                 )
                 .in(database())
-                .fetchAs(Map.class)
+                .fetchAs(PageRank.class)
                 .mappedBy(this::toScore)
                 .all();
-        return (List<Map>) result;
+        return (List<PageRank>) result;
     }
 
 

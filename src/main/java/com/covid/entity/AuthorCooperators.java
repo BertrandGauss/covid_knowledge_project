@@ -7,11 +7,14 @@ public class AuthorCooperators {
 
     private String name;
 
-    private List<Author> cooperators;
+    private String cooperator;
 
-    public AuthorCooperators(String name, List<Author> cooperators) {
+    private String paper;
+
+    public AuthorCooperators(String name, String cooperator, String paper) {
         this.name = name;
-        this.cooperators = cooperators;
+        this.cooperator = cooperator;
+        this.paper = paper;
     }
 
     public String getName() {
@@ -22,11 +25,19 @@ public class AuthorCooperators {
         this.name = name;
     }
 
-    public List<Author> getCooperators() {
-        return cooperators;
+    public String getCooperator() {
+        return cooperator;
     }
 
-    public void setCooperators(List<Author> cooperators) {
-        this.cooperators = cooperators;
+    public void setCooperator(String cooperator) {
+        this.cooperator = cooperator;
+    }
+
+    public String getPaper() {
+        return paper;
+    }
+
+    public void setPaper(String paper) {
+        this.paper = paper;
     }
 }

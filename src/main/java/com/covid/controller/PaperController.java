@@ -1,5 +1,6 @@
 package com.covid.controller;
 
+import com.covid.entity.PageRank;
 import com.covid.entity.PaperDetail;
 import com.covid.entity.PaperView;
 import com.covid.service.PaperService;
@@ -24,7 +25,7 @@ public class PaperController {
 
     @GetMapping("/search")
     List<PaperView> search(@RequestParam("title") String title) {
-        return paperService.searchPaperByTitle((title));
+    return paperService.searchPaperByTitle((title));
     }
 
     @RequestMapping("/getDetail/{title}")
@@ -38,7 +39,7 @@ public class PaperController {
 //        paperService.createGDS();
 //    }
     @GetMapping("/pageRank")
-    List<Map> pageRank() {
+    List<PageRank> pageRank() {
         return paperService.pageRank();
 
     }

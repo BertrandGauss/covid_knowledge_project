@@ -1,90 +1,121 @@
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://neo4j-documentation.github.io/developer-resources/language-guides/assets/css/main.css">
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.css">
+<!DOCTYPE html>
+<html lang="en">
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.js"></script>
-    <title>Covid Knowledge System</title>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Home - Pintereso Bootstrap Template</title>
+	<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/css/bootstrap-table.css">
+	<script type="text/javascript"> (function() { var css = document.createElement('link'); css.href = 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'; css.rel = 'stylesheet'; css.type = 'text/css'; document.getElementsByTagName('head')[0].appendChild(css); })(); </script>
+	<link rel="stylesheet" href="assets/css/app.css">
+	<link rel="stylesheet" href="assets/css/theme.css">
+	<link rel="stylesheet" href="assets/css/weadmin.css">
+	<script src="assets/js/app.js"></script>
+	<script src="assets/js/theme.js"></script>
+
 </head>
 
 <body>
 
-<div role="navigation" class="navbar navbar-default navbar-static-top">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-6 col-md-6">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <form role="search" class="navbar-form" id="search">
-                            <div id="opt" class="form-group">
-                                <select class="form-control" id="search_type">
-                                    <option value ="paper">论文</option>
-                                    <option value ="author">作者</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <input type="text" value="Taking down" placeholder="Search for Paper Title" class="form-control" name="search">
-                            </div>
-                            <button class="btn btn-default" type="submit">Search</button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-            <div class="navbar-header col-sm-6 col-md-6">
-                <div class="logo-well">
-                    <a href="https://neo4j.com/developer/example-project" target="_blank">
-                        <img src="https://dist.neo4j.com/wp-content/uploads/neo4j_logo_globe1-150x150.png" alt="Neo4j World's Leading Graph Database" id="logo">
-                    </a>
-                </div>
-                <div class="navbar-brand">
-                    <div class="brand">Covid Knowledge System</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+	<a class="navbar-brand font-weight-bolder mr-3" href="index.html"><img src="assets/img/logo.png"></a>
+	<div class="brand nav-item"> <a class="nav-link active" href="index.html">Covid Knowledge System</a></div>
+	<div class="collapse navbar-collapse" id="search_">
+		<form role="search" class="navbar-form form-inline" id="search">
+			<div id="opt nav-item" class="form-group">
+				<select class="form-control" id="search_type">
+					<option value ="paper">论文</option>
+					<option value ="author">作者</option>
+				</select>
+			</div>
+			<div>&nbsp;&nbsp;</div>
+			<div class="form-group">
+				<input type="text" value="Taking down" placeholder="Search for Paper Title" class="form-control" name="search">
+			</div>
+			<div>&nbsp;&nbsp;</div>
+			<button class="btn btn-default nav-item" type="submit">Search</button>
+		</form>
+	</div>
+	<div class="collapse navbar-collapse" id="navbarsDefault">
+		<ul class="navbar-nav ml-auto align-items-center">
+			<li class="nav-item">
+				<a class="nav-link active" href="index.html">Home</a>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link" href="#" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">数据挖掘算法
+				</a>
+				<div class="dropdown-menu shadow-lg" aria-labelledby="dropdown01">
+					<a class="dropdown-item" href="./pageRank.html">pageRank</a>
+					<a class="dropdown-item" href="./NodeSimilarity.html">节点相似度</a>
+					<a class="dropdown-item" href="./">Dijkstra</a>
+				</div>
+			</li>
+		</ul>
+	</div>
+</nav>
+<main role="main">
+	<br>
+	<br>
+	<br>
 
-<div class="row">
-    <div class="col-md-5-search">
-        <div class="panel panel-default">
-            <div class="panel-heading">Search Results</div>
-            <table id="results" class="table table-bordered" data-pagination="true"
-                   data-side-pagination="client" data-page-size="5">
-                <thead>
-                <tr>
+	<section class="mt-4 mb-5">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="card-columns">
 
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="col-md-7-detail">
-        <div class="panel panel-default">
-            <div class="panel-heading" id="title">Details</div>
-            <div class="row">
-                <div class="col-md-8 col-sm-8">
 
-                    <ul id="crew">
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="graph_place">
-    <div id="graph">
-    </div>
-</div>
+					<div class="card card-pin">
+						<br>
+						<table id="search_paper_result" class="table table-hover"></table>
+						<table id="search_author_result" class="table table-hover"></table>
+					</div>
+
+					<div class="card-new">
+						<div id="graph">
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+	</section>
+
+</main>
+
+
+
+<footer class="footer pt-5 pb-5 text-center">
+
+	<div class="container">
+
+		<div class="socials-media">
+
+			<ul class="list-unstyled">
+				<li class="d-inline-block ml-1 mr-1"><a href="#" class="text-dark"><i class="fa fa-facebook"></i></a></li>
+				<li class="d-inline-block ml-1 mr-1"><a href="#" class="text-dark"><i class="fa fa-twitter"></i></a></li>
+				<li class="d-inline-block ml-1 mr-1"><a href="#" class="text-dark"><i class="fa fa-instagram"></i></a></li>
+				<li class="d-inline-block ml-1 mr-1"><a href="#" class="text-dark"><i class="fa fa-google-plus"></i></a></li>
+				<li class="d-inline-block ml-1 mr-1"><a href="#" class="text-dark"><i class="fa fa-behance"></i></a></li>
+				<li class="d-inline-block ml-1 mr-1"><a href="#" class="text-dark"><i class="fa fa-dribbble"></i></a></li>
+			</ul>
+
+		</div>
+
+
+
+
+	</div>
+
+</footer>
+</body>
 <style type="text/css">
     .node { stroke: #fff; stroke-width: 1px; }
     .node.author { fill: #FD7623; }
     .node.paper { fill: #3388B1; }
+    .node.cooperator { fill: #b13333; }
     .link { stroke: #999; stroke-opacity: .6; stroke-width: 1px; }
 </style>
 
@@ -105,7 +136,7 @@
       margin-left: 10px;
       margin-right: auto;
   }
-  .graph_place{
+  .graph{
       width: 500px;
       height: 200px;
       margin-top: auto;
@@ -141,7 +172,7 @@
     var text_dy = 20;
     var force = d3.layout.force()
             .charge(-50)
-            .linkDistance(30).
+            .linkDistance(50).
             size([width, height]);
 
     var svg = d3.select("#graph").append("svg")
@@ -189,85 +220,173 @@
         });
     });
 </script>
-<script type="text/javascript">
-    $(function () {
-        function showPaper(title) {
-            $.get("/paper/getDetail/" + encodeURIComponent(title),
-                    function (data) {
-                        if (!data) return;
-                        $("#title").text(data.title);
-                        var $list = $("#crew").empty();
-                        data.cast.forEach(function (cast) {
-                            $list.append($("<li>" + cast.name+  "</li>"));
-                        });
+<script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="assets/js/bootstrap-table.js"></script>
+<script src="assets/js/bootstrap-table-zh-CN.js"></script>
+<script src="assets/lib/layui/layui.js" charset="utf-8"></script>
+<script src="assets/js/admin.js"></script>
+<script>
+	var query=$("#search").find("input[name=search]").val();
+    var query_type = document.getElementById('search_type').value;
+	window.operateEvents = {
+		"click #aDetail": function (e, value, row, index) {
+			 WeAdminShow(row.author.name,'./aDetail.html?name='+row.author.name,600,400);
+		},
+		"click #operate": function (e, value, row, index) {
+			var $list = $("#graph").empty()
+			var width = 600, height = 400;
+			var img_w = 77;
+			var img_h = 80;
+			var text_dx = -20;
+			var text_dy = 20;
+			var force = d3.layout.force()
+					.charge(-50)
+					.linkDistance(50).
+					size([width, height]);
 
-                        $("#vote")
-                            .unbind("click")
-                            .click(function () {
-                                voteInMovie(data.title)
-                            });
-                    }, "json");
-            return false;
-        }
+			var svg = d3.select("#graph").append("svg")
+					 .attr("viewBox", [0, 0, width, height])
+					.attr("pointer-events", "all");
 
-        function showAuthor(name) {
-            $.get("/author/getDetail/" + encodeURIComponent(name),
-                    function (data) {
-                        if (!data) return;
-                        $("#title").text(data.name);
-                        var $list = $("#crew").empty();
-                        data.cast.forEach(function (cast) {
-                            $list.append($("<li>" + cast.title+  "</li>"));
-                        });
-                    }, "json");
-            return false;
-        }
+			d3.json("/author/findCooperator?name="+row.author.name, function(error, graph) {
 
-        function search(showFirst = true) {
-            var query=$("#search").find("input[name=search]").val();
-            var query_type = document.getElementById('search_type').value;
-            if(query_type=="author"){
-                        $.get("/author/search?name=" + encodeURIComponent(query),
-                    function (data) {
-                        var t = $("table#results tbody").empty();
-                        if (!data || data.length == 0) return;
+				if (error) return;
 
-                        data.forEach(function (row, index) {
-                            var author = row.author
-                            $("<tr><td class='Author'>" + author.name +"</td></tr>").appendTo(t)
-                                .click(function() { showAuthor($(this).find("td.author").text());})
-                        });
-                        if (showFirst) {
-                            showAuthor(data[0].author.name);
-                        }
-                    }, "json");
-            return false;
-            }
-            else{
-            $.get("/paper/search?title=" + encodeURIComponent(query),
-                    function (data) {
-                        var t = $("table#results tbody").empty();
-                        if (!data || data.length == 0) return;
+				force.nodes(graph.nodes).links(graph.links).start();
+				const g = svg.append("g")
+					.attr("class","content")
 
-                        data.forEach(function (row, index) {
-                            var paper = row.paper
-                            $("<tr><td class='paper'>" + paper.title +"</td></tr>").appendTo(t)
-                                .click(function() { showPaper($(this).find("td.paper").text());})
-                        });
-                        if (showFirst) {
-                            showPaper(data[0].paper.title);
-                        }
-                    }, "json");
-            return false;
-        }
-        }
-        $("#search").submit(search);
-        search();
-    })
+				var link = svg.selectAll(".link")
+						.data(graph.links).enter()
+						.append("line").attr("class", "link");
+
+				var node = svg.selectAll(".node")
+						.data(graph.nodes).enter()
+						.append("circle")
+						.attr("class", function (d) { return "node "+d.label })
+						.attr("r", 5)
+						.call(force.drag);
+
+				// html title attribute
+				node.append("title")
+						.text(function (d) { if (d.title){return d.title;} return d.name; })
+
+
+				// force feed algo ticks
+				force.on("tick", function() {
+				graph.nodes.forEach(function(d,i){
+						d.x = d.x - img_w/2 < 0     ? img_w/2 : d.x ;
+						d.x = d.x + img_w/2 > width ? width - img_w/2 : d.x ;
+						d.y = d.y - img_h/2 < 0      ? img_h/2 : d.y ;
+						d.y = d.y + img_h/2 + text_dy > height ? height - img_h/2 - text_dy : d.y ;})
+					link.attr("x1", function(d) { return d.source.x; })
+							.attr("y1", function(d) { return d.source.y; })
+							.attr("x2", function(d) { return d.target.x; })
+							.attr("y2", function(d) { return d.target.y; });
+
+					node.attr("cx", function(d) { return d.x; })
+							.attr("cy", function(d) { return d.y; });
+				});
+			});
+			}
+		}
+	window.operateEvent = {
+		"click #pDetail": function (e, value, row, index) {
+			 WeAdminShow(row.paper.name,'./pDetail.html?title='+row.paper.title,600,400);
+		},
+	}
+
+		$('#search_author_result').bootstrapTable({
+			method : 'get',
+			url : "author/search?name=" + encodeURIComponent(query),//请求路径
+			striped : true, //是否显示行间隔色
+			pageNumber : 1, //初始化加载第一页
+			pagination : true,//是否分页
+			sidePagination : 'client',//server:服务器端分页|client：前端分页
+			pageSize : 4,//单页记录数
+			pageList : [ 5, 10, 20, 30 ],//可选择单页记录数
+			queryParams : function(params) {//上传服务器的参数
+				var temp = {//如果是在服务器端实现分页，limit、offset这两个参数是必须的
+					limit : params.limit, // 每页显示数量
+					offset : params.offset, // SQL语句起始索引
+					//page : (params.offset / params.limit) + 1, //当前页码 
+		
+				};
+				return temp;
+			},
+			columns : [ {
+				title : '作者',
+				field : 'author.name',
+				sortable : true
+			}, {
+				title : '操作',
+				events: operateEvents,
+				field : 'id',
+				formatter : oper,//对资源进行操作
+			} ]
+		})
+		
+		//删除、编辑操作
+		function oper(value, row, index) {
+			console.log(row);
+			var htm = "<button class='btn btn-default nav-item' id='aDetail' type='button' >查看</button><button class='btn btn-default nav-item' id='operate'>合作</button>"
+			return htm;
+		}
+
+
+
+
+		$('#search_paper_result').bootstrapTable({
+			method : 'get',
+			url : "paper/search?title=" + encodeURIComponent(query),//请求路径
+			striped : true, //是否显示行间隔色
+			pageNumber : 1, //初始化加载第一页
+			pagination : true,//是否分页
+			sidePagination : 'client',//server:服务器端分页|client：前端分页
+			pageSize : 4,//单页记录数
+			pageList : [ 5, 10, 20, 30 ],//可选择单页记录数
+			queryParams : function(params) {//上传服务器的参数
+				var temp = {//如果是在服务器端实现分页，limit、offset这两个参数是必须的
+					limit : params.limit, // 每页显示数量
+					offset : params.offset, // SQL语句起始索引
+					//page : (params.offset / params.limit) + 1, //当前页码
+
+				};
+				return temp;
+			},
+			columns : [ {
+				title : '论文',
+				field : 'paper.title',
+				sortable : true
+			}, {
+				title : '操作',
+				field : 'id',
+				events: operateEvent,
+				formatter : operation,//对资源进行操作
+			} ]
+		})
+		
+		//删除、编辑操作
+		function operation(value, row, index) {
+			var htm = "<button class='btn btn-default nav-item' id='pDetail' type='button'>查看</button>"
+			return htm;
+		}
+
+
+
+	$("#search").submit(function() {
+			var query=$("#search").find("input[name=search]").val();
+    		var query_type = document.getElementById('search_type').value;
+			if(query_type=="author"){
+			$('#search_author_result').bootstrapTable('refresh', {
+				url : "author/search?name=" + encodeURIComponent(query)
+			});
+			}
+			else{
+			$('#search_paper_result').bootstrapTable('refresh', {
+				url : "paper/search?title=" + encodeURIComponent(query)
+			});}
+			return false;
+		})
 </script>
-
-
-
-
-</body>
 </html>
