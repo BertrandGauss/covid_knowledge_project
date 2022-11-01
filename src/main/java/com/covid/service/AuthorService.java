@@ -208,15 +208,55 @@ public class AuthorService {
         return (List<NodeSimilarity>) result;
     }
 
-    public List toDijkstraPath(TypeSystem ignored, org.neo4j.driver.Record record) {
-        Value path = record.get("nodeNames");
+    public DijkstraPath toDijkstraPath(TypeSystem ignored, org.neo4j.driver.Record record) {
 
-        return path.asList();
+        return new DijkstraPath(record.get("sourceNodeName").asString(),
+                record.get("targetNodeName").asString(),
+                record.get("totalCost").asDouble(),
+                record.get("nodeNames").asList((member) -> {
+                    String result = member.asString();
+                    return result;}),
+                record.get("costs").asList((member) -> {
+                    Double result = member.asDouble();
+                    return result;}));
     }
 
-    public List<List> DijkstraPath(String name) {
+
+    public Map<String, Object> toD3FormatGraph(Collection<DijkstraPath> result) {
+        List<Map<String, Object>> nodes = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> rels = new ArrayList<Map<String, Object>>();
+        List<DijkstraPath> res = (List<DijkstraPath>) result;
+        int i = 0;
+        for (int j = 0; j < result.size(); j++) {
+            DijkstraPath row = ((List<DijkstraPath>) result).get(j);
+            List<String> nodeNames = row.getNodeNames();
+            for(int k = 0; k < nodeNames.size() - 1; k++){
+                Map<String, Object> author1 = map("name", nodeNames.get(k), "label", "author");
+                Map<String, Object> author2 = map("name", nodeNames.get(k+1), "label", "author");
+                int source = nodes.indexOf(author1);
+                int target = nodes.indexOf(author2);
+                if (source == -1) {
+                    nodes.add(author1);
+                    source = i++;
+                }
+                if (target == -1) {
+                    nodes.add(author2);
+                    target = i++;
+                }
+                Map<String, Object> rel = map("source", source, "target", target);
+                int r = rels.indexOf(rel);
+                if(r==-1){
+                    rels.add(rel);
+                }
+            }
+
+        }
+        return map("nodes", nodes, "links", rels);
+    }
+
+    public List<DijkstraPath> DijkstraPath(String name) {
         createAuthorCraph();
-        Collection<List> result = this.neo4jClient
+        Collection<DijkstraPath> result = this.neo4jClient
                 .query("MATCH (source:Author {name: $name}) " +
                         "CALL gds.allShortestPaths.dijkstra.stream('authors', {  sourceNode: source }) " +
                         "YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path " +
@@ -228,27 +268,12 @@ public class AuthorService {
                 )
                 .in(database())
                 .bindAll(Map.of("name", name))
-                .fetchAs(List.class)
+                .fetchAs(DijkstraPath.class)
                 .mappedBy(this::toDijkstraPath)
                 .all();
 
-        return (List<List>) result;
+        return (List<DijkstraPath>) result;
     }
-    //最短路径
-//    public PaperDetail findMinPath(String name1, String name) {
-//        return this.neo4jClient
-//                .query("" +
-//                        "MATCH (paper:Paper {title: $title}) " +
-//                        "OPTIONAL MATCH (author:Author)-[r]->(paper) " +
-//                        "WITH paper, COLLECT({ name: author.name, role: HEAD(r.roles) }) as cast " +
-//                        "RETURN paper { .title, cast: cast }"
-//                )
-//                .in(database())
-//                .bindAll(Map.of("title", title))
-//                .fetchAs(PaperDetail.class)
-//                .mappedBy(this::toPaperDetails)
-//                .one()
-//                .orElse(null);
-//    }
+
 
 }

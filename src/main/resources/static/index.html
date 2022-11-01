@@ -49,7 +49,7 @@
 				<div class="dropdown-menu shadow-lg" aria-labelledby="dropdown01">
 					<a class="dropdown-item" href="./pageRank.html">pageRank</a>
 					<a class="dropdown-item" href="./NodeSimilarity.html">节点相似度</a>
-					<a class="dropdown-item" href="./">Dijkstra</a>
+					<a class="dropdown-item" href="./Dijkstra.html">Dijkstra</a>
 				</div>
 			</li>
 		</ul>
@@ -172,8 +172,8 @@
     var text_dy = 20;
     var force = d3.layout.force()
             .charge(-50)
-            .linkDistance(50).
-            size([width, height]);
+            .linkDistance(50)
+            .size([width, height]);
 
     var svg = d3.select("#graph").append("svg")
              .attr("viewBox", [0, 0, width, height])
@@ -328,7 +328,6 @@
 		
 		//删除、编辑操作
 		function oper(value, row, index) {
-			console.log(row);
 			var htm = "<button class='btn btn-default nav-item' id='aDetail' type='button' >查看</button><button class='btn btn-default nav-item' id='operate'>合作</button>"
 			return htm;
 		}

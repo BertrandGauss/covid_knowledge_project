@@ -1,9 +1,6 @@
 package com.covid.controller;
 
-import com.covid.entity.AuthorCooperators;
-import com.covid.entity.AuthorDetail;
-import com.covid.entity.AuthorView;
-import com.covid.entity.NodeSimilarity;
+import com.covid.entity.*;
 import com.covid.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,8 +40,14 @@ public class AuthorController {
     }
 
     @RequestMapping("/DijkstraPath")
-    List<List> DijkstraPath(@RequestParam("name") String name) {
+    List<DijkstraPath> DijkstraPath(@RequestParam("name") String name) {
         return authorService.DijkstraPath(name);
     }
+
+    @RequestMapping("/DijkstraPathGraph")
+    Map<String, Object> DijkstraPathGraph(@RequestParam("name") String name) {
+        return authorService.toD3FormatGraph(authorService.DijkstraPath(name));
+    }
+
 
 }
