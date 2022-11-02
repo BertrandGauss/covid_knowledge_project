@@ -14,3 +14,8 @@ neo4j-admin import --database=database_name --nodes=:Author=path/authors.csv --n
 
 ## step3:运行后端
 直接run MainApplication文件
+
+## step4:打开网页开始使用
+在浏览器中输入网址localhost:8080(该端口与配置文件application.properties中port保持一致)，即可进入网站主页开始使用。在使用前请先启动neo4j服务。
+
+由于节点和关系较多，在计算节点间的相似度时需要等待较长时间。
