@@ -6,20 +6,20 @@
 </head>
 <body>
 <div class="col-md-7">
-  <div class="panel panel-default">
-    <div class="panel-heading" id="title">Details</div>
-    <div class="row">
-      <div class="col-md-8 col-sm-8">
+    <div class="panel panel-default">
+        <div class="panel-heading" id="title">Details</div>
+        <div class="row">
+            <div class="col-md-8 col-sm-8">
 
-        <ul id="crew">
-        </ul>
-      </div>
+                <ul id="crew">
+                </ul>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 </body>
 
-<script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.0.min.js" type="text/javascript"></script>
 <script>
   var url = decodeURI(window.location.href);
   var argsIndex = url.split("?title=");
@@ -33,5 +33,6 @@
                             $list.append($("<li>" + cast.name+  "</li>"));
                         });
                     }, "json");
+
 </script>
 </html>

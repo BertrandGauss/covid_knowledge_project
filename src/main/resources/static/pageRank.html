@@ -3,15 +3,17 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
     <title>Home - Pintereso Bootstrap Template</title>
-    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/bootstrap-table.css">
-    <script type="text/javascript"> (function() { var css = document.createElement('link'); css.href = 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'; css.rel = 'stylesheet'; css.type = 'text/css'; document.getElementsByTagName('head')[0].appendChild(css); })(); </script>
-    <link rel="stylesheet" href="assets/css/app.css">
-    <link rel="stylesheet" href="assets/css/theme.css">
-    <link rel="stylesheet" href="assets/css/weadmin.css">
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/bootstrap-table.css" rel="stylesheet">
+    <script type="text/javascript">
+         (function() { var css = document.createElement('link'); css.href = 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'; css.rel = 'stylesheet'; css.type = 'text/css'; document.getElementsByTagName('head')[0].appendChild(css); })();
+    </script>
+    <link href="assets/css/app.css" rel="stylesheet">
+    <link href="assets/css/theme.css" rel="stylesheet">
+    <link href="assets/css/weadmin.css" rel="stylesheet">
     <script src="assets/js/app.js"></script>
     <script src="assets/js/theme.js"></script>
 
@@ -21,16 +23,17 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
     <a class="navbar-brand font-weight-bolder mr-3" href="index.html"><img src="assets/img/logo.png"></a>
-    <div class="brand nav-item"> <a class="nav-link active" href="index.html">Covid Knowledge System</a></div>
+    <div class="brand nav-item"><a class="nav-link active" href="index.html">Covid Knowledge System</a></div>
     <div class="collapse navbar-collapse" id="navbarsDefault">
         <ul class="navbar-nav ml-auto align-items-center">
             <li class="nav-item">
                 <a class="nav-link active" href="index.html">Home</a>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link" href="#" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">数据挖掘算法
+                <a aria-expanded="false" aria-haspopup="true" class="nav-link" data-toggle="dropdown" href="#"
+                   id="dropdown02">数据挖掘算法
                 </a>
-                <div class="dropdown-menu shadow-lg" aria-labelledby="dropdown01">
+                <div aria-labelledby="dropdown01" class="dropdown-menu shadow-lg">
                     <a class="dropdown-item" href="./pageRank.html">pageRank</a>
                     <a class="dropdown-item" href="./NodeSimilarity.html">节点相似度</a>
                     <a class="dropdown-item" href="./Dijkstra.html">Dijkstra</a>
@@ -52,9 +55,8 @@
 
                     <div class="card-new ">
                         <br>
-                        <table id="pageRank" class="table table-hover"></table>
+                        <table class="table table-hover" id="pageRank"></table>
                     </div>
-
 
 
                 </div>
@@ -66,7 +68,6 @@
 </main>
 
 
-
 <footer class="footer pt-5 pb-5 text-center">
 
     <div class="container">
@@ -74,17 +75,21 @@
         <div class="socials-media">
 
             <ul class="list-unstyled">
-                <li class="d-inline-block ml-1 mr-1"><a href="#" class="text-dark"><i class="fa fa-facebook"></i></a></li>
-                <li class="d-inline-block ml-1 mr-1"><a href="#" class="text-dark"><i class="fa fa-twitter"></i></a></li>
-                <li class="d-inline-block ml-1 mr-1"><a href="#" class="text-dark"><i class="fa fa-instagram"></i></a></li>
-                <li class="d-inline-block ml-1 mr-1"><a href="#" class="text-dark"><i class="fa fa-google-plus"></i></a></li>
-                <li class="d-inline-block ml-1 mr-1"><a href="#" class="text-dark"><i class="fa fa-behance"></i></a></li>
-                <li class="d-inline-block ml-1 mr-1"><a href="#" class="text-dark"><i class="fa fa-dribbble"></i></a></li>
+                <li class="d-inline-block ml-1 mr-1"><a class="text-dark" href="#"><i class="fa fa-facebook"></i></a>
+                </li>
+                <li class="d-inline-block ml-1 mr-1"><a class="text-dark" href="#"><i class="fa fa-twitter"></i></a>
+                </li>
+                <li class="d-inline-block ml-1 mr-1"><a class="text-dark" href="#"><i class="fa fa-instagram"></i></a>
+                </li>
+                <li class="d-inline-block ml-1 mr-1"><a class="text-dark" href="#"><i class="fa fa-google-plus"></i></a>
+                </li>
+                <li class="d-inline-block ml-1 mr-1"><a class="text-dark" href="#"><i class="fa fa-behance"></i></a>
+                </li>
+                <li class="d-inline-block ml-1 mr-1"><a class="text-dark" href="#"><i class="fa fa-dribbble"></i></a>
+                </li>
             </ul>
 
         </div>
-
-
 
 
     </div>
@@ -97,6 +102,7 @@
     .node.paper { fill: #3388B1; }
     .node.cooperator { fill: #b13333; }
     .link { stroke: #999; stroke-opacity: .6; stroke-width: 1px; }
+
 </style>
 
 <style>
@@ -138,9 +144,10 @@
     fill:white;
   }
 
+
 </style>
 
-<script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.0.min.js" type="text/javascript"></script>
 <script src="https://d3js.org/d3.v3.min.js" type="text/javascript"></script>
 
 <!--<script src="https://d3js.org/d3.v5.min.js"></script>-->
@@ -148,7 +155,7 @@
 <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 <script src="assets/js/bootstrap-table.js"></script>
 <script src="assets/js/bootstrap-table-zh-CN.js"></script>
-<script src="assets/lib/layui/layui.js" charset="utf-8"></script>
+<script charset="utf-8" src="assets/lib/layui/layui.js"></script>
 <script src="assets/js/admin.js"></script>
 <script>
     $('#pageRank').bootstrapTable({
@@ -179,5 +186,6 @@
 				sortable : true
 			} ]
 		})
+
 </script>
 </html>

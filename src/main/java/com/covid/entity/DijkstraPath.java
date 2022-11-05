@@ -9,14 +9,13 @@ public class DijkstraPath {
     private List<String> nodeNames;
     private List<Double> costs;
 
-    public DijkstraPath (String sourceNodeName,String targetNodeName,Double totalCost,List<String> nodeNames,List<Double> costs){
+    public DijkstraPath(String sourceNodeName, String targetNodeName, Double totalCost, List<String> nodeNames, List<Double> costs) {
         this.sourceNodeName = sourceNodeName;
         this.targetNodeName = targetNodeName;
         this.totalCost = totalCost;
         this.nodeNames = nodeNames;
         this.costs = costs;
     }
-
 
 
     public String getSourceNodeName() {
@@ -39,8 +38,8 @@ public class DijkstraPath {
         return totalCost;
     }
 
-    public void setCosts(List<Double> costs) {
-        this.costs = costs;
+    public void setTotalCost(Double totalCost) {
+        this.totalCost = totalCost;
     }
 
     public List<String> getNodeNames() {
@@ -55,7 +54,7 @@ public class DijkstraPath {
         return costs;
     }
 
-    public void setTotalCost(Double totalCost) {
-        this.totalCost = totalCost;
+    public void setCosts(List<Double> costs) {
+        this.costs = costs;
     }
 }

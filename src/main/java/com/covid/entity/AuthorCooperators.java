@@ -1,8 +1,6 @@
 package com.covid.entity;
 
 
-import java.util.List;
-
 public class AuthorCooperators {
 
     private String name;

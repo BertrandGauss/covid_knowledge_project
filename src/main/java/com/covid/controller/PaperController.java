@@ -25,7 +25,7 @@ public class PaperController {
 
     @GetMapping("/search")
     List<PaperView> search(@RequestParam("title") String title) {
-    return paperService.searchPaperByTitle((title));
+        return paperService.searchPaperByTitle((title));
     }
 
     @RequestMapping("/getDetail/{title}")
@@ -34,10 +34,7 @@ public class PaperController {
         return paperService.fetchDetailsByTitle((title));
     }
 
-    //    @GetMapping("/createGDS")
-//    void createGDS(){
-//        paperService.createGDS();
-//    }
+
     @GetMapping("/pageRank")
     List<PageRank> pageRank() {
         return paperService.pageRank();

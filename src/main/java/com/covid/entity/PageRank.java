@@ -4,9 +4,9 @@ public class PageRank {
     private String title;
     private Double score;
 
-    public  PageRank(String title,Double score){
+    public PageRank(String title, Double score) {
         this.title = title;
-        this.score =score;
+        this.score = score;
     }
 
     public String getTitle() {

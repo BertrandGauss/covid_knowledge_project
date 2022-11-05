@@ -28,9 +28,9 @@ public interface AuthorDao extends Repository<Author, String> {
 
     @Query("CALL gds.graph.drop('authors',false);")
     void dropAuthorGraph();
+
     @Query("CALL gds.graph.drop('min_authors',false);")
     void dropminAuthorGraph();
-
 
 
 }

@@ -5,10 +5,10 @@ public class NodeSimilarity {
     private String node2;
     private Double similarity;
 
-    public NodeSimilarity( String node1, String node2, Double similarity){
-        this.node1=node1;
-        this.node2=node2;
-        this.similarity=similarity;
+    public NodeSimilarity(String node1, String node2, Double similarity) {
+        this.node1 = node1;
+        this.node2 = node2;
+        this.similarity = similarity;
     }
 
     public String getNode1() {

@@ -134,7 +134,7 @@ public class PaperService {
 
     public PageRank toScore(TypeSystem ignored, org.neo4j.driver.Record record) {
 
-        return new PageRank(record.get(0).asString(),record.get(1).asDouble());
+        return new PageRank(record.get(0).asString(), record.get(1).asDouble());
 
     }
 

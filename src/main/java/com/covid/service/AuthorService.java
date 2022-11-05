@@ -131,7 +131,7 @@ public class AuthorService {
         int i = 0;
         for (int j = 0; j < result.size(); j++) {
             AuthorCooperators row = ((List<AuthorCooperators>) result).get(j);
-            if(j == 0){
+            if (j == 0) {
                 nodes.add(map("name", row.getName(), "label", "author"));
             }
             Map<String, Object> paper = map("title", row.getPaper(), "label", "paper");
@@ -193,7 +193,7 @@ public class AuthorService {
 
     public NodeSimilarity toSimilarity(TypeSystem ignored, org.neo4j.driver.Record record) {
 
-        return  new NodeSimilarity(record.get(0).asString(),record.get(1).asString(),record.get(2).asDouble());
+        return new NodeSimilarity(record.get(0).asString(), record.get(1).asString(), record.get(2).asDouble());
     }
 
     public List<NodeSimilarity> node_similarity() {
@@ -225,10 +225,12 @@ public class AuthorService {
                 record.get("totalCost").asDouble(),
                 record.get("nodeNames").asList((member) -> {
                     String result = member.asString();
-                    return result;}),
+                    return result;
+                }),
                 record.get("costs").asList((member) -> {
                     Double result = member.asDouble();
-                    return result;}));
+                    return result;
+                }));
     }
 
 
@@ -240,9 +242,9 @@ public class AuthorService {
         for (int j = 0; j < result.size(); j++) {
             DijkstraPath row = ((List<DijkstraPath>) result).get(j);
             List<String> nodeNames = row.getNodeNames();
-            for(int k = 0; k < nodeNames.size() - 1; k++){
+            for (int k = 0; k < nodeNames.size() - 1; k++) {
                 Map<String, Object> author1 = map("name", nodeNames.get(k), "label", "author");
-                Map<String, Object> author2 = map("name", nodeNames.get(k+1), "label", "author");
+                Map<String, Object> author2 = map("name", nodeNames.get(k + 1), "label", "author");
                 int source = nodes.indexOf(author1);
                 int target = nodes.indexOf(author2);
                 if (source == -1) {
@@ -255,7 +257,7 @@ public class AuthorService {
                 }
                 Map<String, Object> rel = map("source", source, "target", target);
                 int r = rels.indexOf(rel);
-                if(r==-1){
+                if (r == -1) {
                     rels.add(rel);
                 }
             }

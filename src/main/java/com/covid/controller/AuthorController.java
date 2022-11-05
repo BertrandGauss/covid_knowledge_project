@@ -1,6 +1,9 @@
 package com.covid.controller;
 
-import com.covid.entity.*;
+import com.covid.entity.AuthorDetail;
+import com.covid.entity.AuthorView;
+import com.covid.entity.DijkstraPath;
+import com.covid.entity.NodeSimilarity;
 import com.covid.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
