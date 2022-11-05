@@ -180,26 +180,36 @@ public class AuthorService {
         }
     }
 
+    public void createminAuthorCraph() {
+        try {
+            authorDao.createminAuthorGraph();
+        } catch (InvalidDataAccessResourceUsageException e) {
+
+            System.out.println("已经创建过了");
+        } catch (IllegalArgumentException illegalArgumentException) {
+            System.out.println("已经创建过了");
+        }
+    }
+
     public NodeSimilarity toSimilarity(TypeSystem ignored, org.neo4j.driver.Record record) {
 
         return  new NodeSimilarity(record.get(0).asString(),record.get(1).asString(),record.get(2).asDouble());
     }
 
     public List<NodeSimilarity> node_similarity() {
-        createAuthorCraph();
+        createminAuthorCraph();
         this.neo4jClient
-                .query("CALL gds.nodeSimilarity.write.estimate('authors', { " +
+                .query("CALL gds.nodeSimilarity.write.estimate('min_authors', { " +
                         " writeRelationshipType: 'SIMILAR', " +
                         " writeProperty: 'score' })" +
                         " YIELD nodeCount, relationshipCount, bytesMin, bytesMax, requiredMemory"
                 )
                 .in(database());
         Collection<NodeSimilarity> result = this.neo4jClient
-                .query("CALL gds.nodeSimilarity.stream('authors') " +
+                .query("CALL gds.nodeSimilarity.stream('min_authors') " +
                         " YIELD node1, node2, similarity " +
                         " RETURN gds.util.asNode(node1).name AS Person1, gds.util.asNode(node2).name AS Person2, similarity " +
-                        "ORDER BY similarity DESCENDING, Person1, Person2 " +
-                        "Limit 1000"
+                        "ORDER BY similarity DESCENDING, Person1, Person2"
                 )
                 .in(database())
                 .fetchAs(NodeSimilarity.class)

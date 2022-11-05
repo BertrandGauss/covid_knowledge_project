@@ -160,6 +160,8 @@ public class PaperService {
                 .fetchAs(PageRank.class)
                 .mappedBy(this::toScore)
                 .all();
+        //销毁图，防止占用内存
+
         return (List<PageRank>) result;
     }
 

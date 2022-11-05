@@ -15,8 +15,22 @@ public interface AuthorDao extends Repository<Author, String> {
     @Query("CALL gds.graph.project.cypher(\n" +
             "  'authors',\n" +
             "  'MATCH (a:Author ) RETURN id(a) AS id',\n" +
-            "  'MATCH (x:Author)-[r:write*2]-(y:Author) WHERE x.name <> y.name WITH x, r,y LIMIT 1000000 RETURN id(x) as target , id(y) as source, \"cooperate\" as type,   COUNT(*) AS cooperate_times')\n" +
+            "  'MATCH (x:Author)-[r:write*2]-(y:Author) WHERE x.name <> y.name WITH x, r,y LIMIT 10000000 RETURN id(x) as target , id(y) as source, \"cooperate\" as type,   COUNT(*) AS cooperate_times')\n" +
             "YIELD graphName AS graph, nodeQuery, nodeCount AS nodes, relationshipQuery, relationshipCount AS rels")
     void createAuthorGraph();
+
+    @Query("CALL gds.graph.project.cypher(\n" +
+            "  'min_authors',\n" +
+            "  'MATCH (a:Author ) RETURN id(a) AS id',\n" +
+            "  'MATCH (x:Author)-[r:write*2]-(y:Author) WHERE x.name <> y.name WITH x, r,y LIMIT 500000 RETURN id(x) as target , id(y) as source, \"cooperate\" as type,   COUNT(*) AS cooperate_times')\n" +
+            "YIELD graphName AS graph, nodeQuery, nodeCount AS nodes, relationshipQuery, relationshipCount AS rels")
+    void createminAuthorGraph();
+
+    @Query("CALL gds.graph.drop('authors',false);")
+    void dropAuthorGraph();
+    @Query("CALL gds.graph.drop('min_authors',false);")
+    void dropminAuthorGraph();
+
+
 
 }

@@ -15,6 +15,9 @@ public interface PaperDao extends Repository<Paper, String> {
     @Query("CALL gds.graph.project( 'authors_and_papers', ['Author','Paper'],['write'])")
     void createGds();
 
+    @Query("CALL gds.graph.drop('authors_and_papers',false);")
+    void dropGds();
+
 
 }
 

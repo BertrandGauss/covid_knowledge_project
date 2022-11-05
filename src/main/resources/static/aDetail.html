@@ -23,7 +23,6 @@
   var url = decodeURI(window.location.href);
   var argsIndex = url.split("?name=");
   var name = argsIndex[1];
-  alert(name);
  $.get("/author/getDetail/" + encodeURIComponent(name),
                     function (data) {
                         if (!data) return;
